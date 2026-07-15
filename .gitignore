@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+env/
+
+# Environment
+.env
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+
+# Node
+node_modules/
+
+# React
+dist/
+
+# Python testing
+.pytest_cache/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
