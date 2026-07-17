@@ -13,3 +13,11 @@ async def root():
         "message": "Welcome to Agentic-XDR",
         "status": "running",
     }
+
+@app.get("/health")
+async def health():
+    return {
+        "status": "healthy",
+        "service": "Agentic-XDR API",
+        "version": "1.0.0"
+    }
