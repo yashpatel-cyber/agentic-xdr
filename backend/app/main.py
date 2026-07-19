@@ -14,10 +14,20 @@ async def root():
         "status": "running",
     }
 
+
 @app.get("/health")
 async def health():
     return {
         "status": "healthy",
         "service": "Agentic-XDR API",
-        "version": "1.0.0"
+        "version": "1.0.0",
+    }
+
+
+@app.get("/version")
+async def version():
+    return {
+        "application": "Agentic-XDR",
+        "version": "1.0.0",
+        "environment": "development",
     }
