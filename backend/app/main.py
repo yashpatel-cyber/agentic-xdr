@@ -5,9 +5,8 @@ from app.api.v1.router import api_router
 from app.core.config import settings
 from app.core.exceptions import register_exception_handlers
 from app.core.lifespan import lifespan
-from app.middleware.logging import RequestLoggingMiddleware
-
 from app.core.logging import logger
+from app.middleware.logging import RequestLoggingMiddleware
 
 logger.info("Starting Agentic-XDR Backend")
 
@@ -17,6 +16,10 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Request Logging Middleware
+app.add_middleware(RequestLoggingMiddleware)
+
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -27,13 +30,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Global Exception Handlers
 register_exception_handlers(app)
-app.add_middleware(RequestLoggingMiddleware)
+
+# API Routes
 app.include_router(
     api_router,
     prefix="/api/v1",
 )
-
 
 @app.get("/")
 async def root():

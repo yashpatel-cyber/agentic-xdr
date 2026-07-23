@@ -12,3 +12,7 @@ async def version():
         "version": settings.APP_VERSION,
         "environment": settings.APP_ENV,
     }
+
+@router.get("/crash")
+async def crash():
+    raise Exception("Test exception")
