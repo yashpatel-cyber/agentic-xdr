@@ -1,23 +1,20 @@
-from fastapi import APIRouter
-from sqlalchemy import text
+from fastapi import APIRouter, Request
 
-from app.database.session import engine
+from app.core.config import settings
+from app.schemas.response import APIResponse
 
-router = APIRouter(tags=["Health"])
+router = APIRouter()
 
 
-@router.get("/health")
-async def health():
+@router.get("/health", response_model=APIResponse)
+async def health(request: Request):
 
-    db_status = "healthy"
-
-    try:
-        with engine.connect() as conn:
-            conn.execute(text("SELECT 1"))
-    except Exception:
-        db_status = "unhealthy"
-
-    return {
-        "status": "healthy",
-        "database": db_status,
-    }
+    return APIResponse(
+        message="Health check successful",
+        data={
+            "status": "healthy",
+            "service": settings.APP_NAME,
+            "version": settings.APP_VERSION,
+        },
+        request_id=request.state.request_id,
+    )

@@ -1,12 +1,16 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.router import api_router
+
 from app.core.config import settings
 from app.core.exceptions import register_exception_handlers
 from app.core.lifespan import lifespan
 from app.core.logging import logger
+
 from app.middleware.logging import RequestLoggingMiddleware
+
+from app.schemas.response import APIResponse
 
 logger.info("Starting Agentic-XDR Backend")
 
@@ -39,9 +43,14 @@ app.include_router(
     prefix="/api/v1",
 )
 
-@app.get("/")
-async def root():
-    return {
-        "application": settings.APP_NAME,
-        "status": "running",
-    }
+@app.get("/", response_model=APIResponse)
+async def root(request: Request):
+
+    return APIResponse(
+        message="Agentic-XDR API is running",
+        data={
+            "application": settings.APP_NAME,
+            "status": "running",
+        },
+        request_id=request.state.request_id,
+    )
