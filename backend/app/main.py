@@ -1,33 +1,40 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.api.v1.router import api_router
+from app.core.config import settings
+from app.core.exceptions import register_exception_handlers
+from app.core.logging import setup_logging
+
+setup_logging()
 
 app = FastAPI(
-    title="Agentic-XDR API",
-    version="1.0.0",
-    description="Backend API for Agentic-XDR",
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION,
+    description="Agentic-XDR Backend API",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+register_exception_handlers(app)
+
+app.include_router(
+    api_router,
+    prefix="/api/v1",
 )
 
 
 @app.get("/")
 async def root():
     return {
-        "message": "Welcome to Agentic-XDR",
+        "application": settings.APP_NAME,
         "status": "running",
-    }
-
-
-@app.get("/health")
-async def health():
-    return {
-        "status": "healthy",
-        "service": "Agentic-XDR API",
-        "version": "1.0.0",
-    }
-
-
-@app.get("/version")
-async def version():
-    return {
-        "application": "Agentic-XDR",
-        "version": "1.0.0",
-        "environment": "development",
     }
